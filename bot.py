@@ -24,7 +24,6 @@ bot = telebot.TeleBot(config["token"])
 ADMINS = set(config["admins"])
 NOT_CENSOR_WORDS = set(config["notcensure_words"])
 BANNED_WORDS = set(config["banned_words"])
-MAT_WORDS = set(config["mat_words"])
 BANNED_MUTE_DURATION = float(config["banned_mute_duration"])
 MAT_MUTE_DURATION = float(config["mat_mute_duration"])
 
