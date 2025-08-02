@@ -1,3 +1,4 @@
+```python
 import telebot
 import json
 import re
@@ -52,7 +53,7 @@ def is_admin(chat_id, user_id):
         return False
 
 # Применение мута
-def apply_mute(chat_id, user_id, duration_hours, admin_username):
+def apply_mute(chat_id, user_id, duration_hours, admin_username, user_username):
     try:
         # Проверка прав бота
         if not is_admin(chat_id, bot.get_me().id):
@@ -103,14 +104,14 @@ def normalize_and_check(text, chat_id, user_id, user_username):
     # Проверка на запрещённые слова
     for word in BANNED_WORDS:
         if re.search(r'\b' + re.escape(word) + r'\b', normalized):
-            apply_mute(chat_id, user_id, BANNED_MUTE_DURATION, "system")
+            apply_mute(chat_id, user_id, BANNED_MUTE_DURATION, "system", user_username)
             log_action("muted", "system", user_username, f"for forbidden word: {word}")
             return
 
     # Проверка на маты
-    for word in MAT_WORDS:
+    for word in NOT_CENSOR_WORDS:
         if re.search(r'\b' + re.escape(word) + r'\b', normalized):
-            apply_mute(chat_id, user_id, MAT_MUTE_DURATION, "system")
+            apply_mute(chat_id, user_id, MAT_MUTE_DURATION, "system", user_username)
             log_action("muted", "system", user_username, f"for mat: {word}")
             return
 
@@ -167,7 +168,7 @@ def handle_message(message):
             # Получение ID пользователя
             try:
                 user = bot.get_chat(username)
-                apply_mute(message.chat.id, user.id, duration_hours, message.from_user.username)
+                apply_mute(message.chat.id, user.id, duration_hours, message.from_user.username, user.username or "unknown")
             except Exception as e:
                 logger.error(f"Ошибка при муте: {e}")
         except Exception as e:
@@ -177,3 +178,4 @@ def handle_message(message):
 if __name__ == "__main__":
     cleanup_old_logs()
     bot.polling(none_stop=True)
+```
